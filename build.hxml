@@ -1,0 +1,6 @@
+--neko bin/room-shift.n
+--debug
+-dce full
+--class-path src
+--main Main
+--cmd neko bin/room-shift.n

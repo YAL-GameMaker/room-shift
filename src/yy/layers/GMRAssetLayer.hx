@@ -1,0 +1,42 @@
+package yy.layers;
+
+typedef GMRAssetLayer = {
+	resourceType:String,
+	resourceVersion:String,
+	name:String,
+	depth:Int,
+	assets:Array<{
+		resourceType:String,
+		resourceVersion:String,
+		name:String,
+		ignore:Bool,
+		x:Float,
+		y:Float,
+		spriteId:{
+			name:String,
+			path:String
+		},
+		headPosition:Float,
+		rotation:Float,
+		scaleX:Float,
+		scaleY:Float,
+		animationSpeed:Float,
+		colour:Int,
+		inheritedItemId:Any,
+		frozen:Bool,
+		inheritItemSettings:Bool
+	}>,
+	visible:Bool,
+	userdefinedDepth:Bool,
+	inheritLayerDepth:Bool,
+	inheritLayerSettings:Bool,
+	inheritVisibility:Bool,
+	inheritSubLayers:Bool,
+	gridX:Int,
+	gridY:Int,
+	layers:Array<Any>,
+	hierarchyFrozen:Bool,
+	effectEnabled:Bool,
+	effectType:Any,
+	properties:Array<Any>
+};

@@ -7,6 +7,7 @@
     {"id":{"name":"spr_cow","path":"sprites/spr_cow/spr_cow.yy",},"order":2,},
     {"id":{"name":"pt_test","path":"paths/pt_test/pt_test.yy",},"order":6,},
     {"id":{"name":"spr_rock","path":"sprites/spr_rock/spr_rock.yy",},"order":5,},
+    {"id":{"name":"spr_stripes","path":"sprites/spr_stripes/spr_stripes.yy",},"order":7,},
     {"id":{"name":"obj_cow","path":"objects/obj_cow/obj_cow.yy",},"order":1,},
     {"id":{"name":"tsp_grass","path":"sprites/tsp_grass/tsp_grass.yy",},"order":4,},
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},"order":0,},

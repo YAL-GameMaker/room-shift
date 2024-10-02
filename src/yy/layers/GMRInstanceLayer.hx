@@ -1,0 +1,46 @@
+package yy.layers;
+
+typedef GMRInstanceLayer = {
+	resourceType:String,
+	resourceVersion:String,
+	name:String,
+	instances:Array<{
+		resourceType:String,
+		resourceVersion:String,
+		name:String,
+		properties:Array<Any>,
+		isDnd:Bool,
+		objectId:{
+			name:String,
+			path:String
+		},
+		inheritCode:Bool,
+		hasCreationCode:Bool,
+		colour:Int,
+		rotation:Float,
+		scaleX:Float,
+		scaleY:Float,
+		imageIndex:Int,
+		imageSpeed:Float,
+		inheritedItemId:Any,
+		frozen:Bool,
+		ignore:Bool,
+		inheritItemSettings:Bool,
+		x:Float,
+		y:Float
+	}>,
+	visible:Bool,
+	depth:Int,
+	userdefinedDepth:Bool,
+	inheritLayerDepth:Bool,
+	inheritLayerSettings:Bool,
+	inheritVisibility:Bool,
+	inheritSubLayers:Bool,
+	gridX:Int,
+	gridY:Int,
+	layers:Array<Any>,
+	hierarchyFrozen:Bool,
+	effectEnabled:Bool,
+	effectType:Any,
+	properties:Array<Any>
+};
