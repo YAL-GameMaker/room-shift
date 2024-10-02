@@ -237,9 +237,12 @@ class YyJsonPrinter {
 			}
 			function addField(field:String):Void {
 				addSep();
+				if (field == null) field = "null?!";
 				found++;
 				r += stringify_string(field) + (compact || isGM2024 ? ":" : ": ");
-				nextType = fieldTypes != null ? fieldTypes[field] : null;
+				if (fieldTypes != null) {
+					nextType = fieldTypes.get(field);
+				} else nextType = null;
 				r += stringify_rec(Reflect.field(obj, field), indent, compact,
 					fieldDigits != null ? fieldDigits[field] : null
 				);

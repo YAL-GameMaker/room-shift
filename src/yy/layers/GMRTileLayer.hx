@@ -1,6 +1,6 @@
 package yy.layers;
 
-import yy.YyTileArray;
+import yy.GMTileArray;
 
 typedef GMRTileLayer = {
 	resourceType:String,
@@ -17,7 +17,7 @@ typedef GMRTileLayer = {
 		TileDataFormat:Int,
 		SerialiseWidth:Int,
 		SerialiseHeight:Int,
-		TileCompressedData:YyTileRLE
+		TileCompressedData:GMTileRLE
 	},
 	visible:Bool,
 	userdefinedDepth:Bool,

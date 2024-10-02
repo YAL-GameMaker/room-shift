@@ -2,25 +2,26 @@ package tools;
 
 import haxe.iterators.DynamicAccessIterator;
 import haxe.iterators.DynamicAccessKeyValueIterator;
-
-/**
- * This is _almost_ like haxe.DynamicAccess, but with some JS-specific tricks.
- * @author YellowAfterlife
- */
 #if (js)
 import tools.NativeObject;
+#end
 
+/**
+	This is _almost_ like haxe.DynamicAccess, but with some JS-specific tricks.
+	@author YellowAfterlife
+**/
+#if js
 @:forward(keys)
-abstract Dictionary<T>(Dynamic) from Dynamic {
+#else
+@:forward(keys)
+#end
+abstract Dictionary<T>(DictionaryImpl<T>) from DictionaryImpl<T> {
 	public inline function new() {
+		#if js
 		this = js.lib.Object.create(null);
-	}
-	public function copy():Dictionary<T> {
-		var dict = new Dictionary();
-		NativeObject.forField(this, function(s) {
-			dict[s] = get(s);
-		});
-		return dict;
+		#else
+		this = {};
+		#end
 	}
 	public static function fromKeys<T>(keys:Array<String>, val:T):Dictionary<T> {
 		var out = new Dictionary();
@@ -29,22 +30,93 @@ abstract Dictionary<T>(Dynamic) from Dynamic {
 	}
 	public static function fromObject<T>(obj:Dynamic):Dictionary<T> {
 		var out = new Dictionary<T>();
+		#if js
 		NativeObject.forField(obj, function(s) {
 			out.set(s, untyped obj[s]);
 		});
+		#else
+		for (key in Reflect.fields(obj)) {
+			out.set(key, Reflect.field(obj, key));
+		}
+		#end
 		return out;
 	}
-	public inline function destroy():Void { }
-	public inline function clear():Void {
-		NativeObject.forField(this, function(s) remove(s));
+	//
+	public function copy():Dictionary<T> {
+		#if js
+		var dict = new Dictionary();
+		NativeObject.forField(this, function(s) {
+			dict[s] = get(s);
+		});
+		return dict;
+		#else
+		return this.copy();
+		#end
 	}
 	//
 	public inline function isEmpty():Bool {
+		#if js
 		return !NativeObject.hasFields(this);
+		#else
+		for (k => v in this) {
+			return false;
+		}
+		return true;
+		#end
 	}
-	public inline function exists(k:String):Bool {
-		return Reflect.hasField(this, k);
+	public inline function exists(key:String):Bool {
+		#if js
+		return Reflect.hasField(this, key);
+		#else
+		return this.exists(key);
+		#end
 	}
+	//
+	#if js
+	@:arrayAccess public inline function get(key:String):T {
+		return untyped this[key];
+	}
+	public inline function nc(key:String):T {
+		return JsTools.nca(this, untyped this[key]);
+	}
+	public inline function set(k:String, v:T):Void {
+		untyped this[k] = v;
+	}
+	@:arrayAccess public inline function setret(k:String, v:T):T {
+		return untyped this[k] = v;
+	}
+	public inline function remove(k:String):Void {
+		js.Syntax.code("delete {0}[{1}]", this, k);
+	}
+	public inline function size():Int {
+		return NativeObject.countFields(this);
+	}
+	#else
+	@:arrayAccess public inline function get(key:String):T {
+		return this.get(key);
+	}
+	public inline function nc(key:String):T {
+		return (this != null ? this.get(key) : null);
+	}
+	public inline function set(k:String, v:T):Void {
+		this.set(k, v);
+	}
+	@:arrayAccess public inline function setret(k:String, v:T):T {
+		return this[k] = v;
+	}
+	public inline function remove(key:String):Void {
+		this.remove(key);
+	}
+	public function size():Int {
+		var n = 0;
+		for (_ => _ in this) n += 1;
+		return n;
+	}
+	#end
+	public function defget(key:String, def:T):T {
+		return this.exists(key) ? get(key) : def;
+	}
+	//
 	public function move(k1:String, k2:String):Bool {
 		if (exists(k2)) return false;
 		if (exists(k1)) {
@@ -55,56 +127,24 @@ abstract Dictionary<T>(Dynamic) from Dynamic {
 		} else return false;
 	}
 	//
-	@:arrayAccess public inline function get(k:String):T {
-		return untyped this[k];
-	}
-	public function defget(k:String, def:T):T {
-		return exists(k) ? get(k) : def;
-	}
-	public inline function nc(k:String):T {
-		return JsTools.nca(this, untyped this[k]);
-	}
-	//
-	public inline function set(k:String, v:T):Void {
-		untyped this[k] = v;
-	}
-	@:arrayAccess public inline function setret(k:String, v:T):T {
-		return untyped this[k] = v;
-	}
-	//
-	public inline function remove(k:String):Void {
-		js.Syntax.code("delete {0}[{1}]", this, k);
-	}
 	public inline function keys():Array<String> {
 		return Reflect.fields(this);
-	}
-	public inline function size():Int {
-		return NativeObject.countFields(this);
 	}
 	//
 	public inline function keyValueIterator():DynamicAccessKeyValueIterator<T> {
 		return new DynamicAccessKeyValueIterator(this);
 	}
 	public inline function forEach(fn:String->T->Void):Void {
+		#if js
 		NativeObject.forField(this, function(s) fn(s, get(s)));
+		#else
+		for (key => val in this) fn(key, val);
+		#end
 	}
 }
+
+#if js
+typedef DictionaryImpl<T> = Dynamic;
 #else
-@:forward(exists, set, keys, remove)
-abstract Dictionary<T>(Map<String, T>) from Map<String, T> {
-	public inline function new() this = new Map();
-	public inline function destroy():Void { }
-	//
-	public static function fromKeys<T>(keys:Array<String>, val:T):Dictionary<T> {
-		var out = new Dictionary();
-		for (key in keys) out.set(key, val);
-		return out;
-	}
-	//
-	@:arrayAccess public inline function get(k:String):Null<T> return this.get(k);
-	@:arrayAccess public inline function set(k:String, v:T):T {
-		this.set(k, v);
-		return v;
-	}//
-}
+typedef DictionaryImpl<T> = haxe.DynamicAccess<T>;
 #end

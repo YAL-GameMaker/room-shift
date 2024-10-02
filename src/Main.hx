@@ -1,7 +1,10 @@
+import yy.YyJsonMeta;
+import yy.YyJsonPrinter;
 import yy.GMTileArray;
 
 class Main {
 	public static function main() {
+		YyJsonPrinter.init();
 		/*var g = new GMTileGrid(4, 4);
 		g.testFill();
 		trace(g);
