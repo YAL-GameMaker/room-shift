@@ -1,0 +1,13 @@
+{
+  "FolderOrderSettings":[],
+  "ResourceOrderSettings":[
+    {"name":"obj_cow","order":1,"path":"objects/obj_cow/obj_cow.yy",},
+    {"name":"pt_test","order":6,"path":"paths/pt_test/pt_test.yy",},
+    {"name":"spr_cow","order":2,"path":"sprites/spr_cow/spr_cow.yy",},
+    {"name":"spr_nineslice","order":8,"path":"sprites/spr_nineslice/spr_nineslice.yy",},
+    {"name":"spr_rock","order":5,"path":"sprites/spr_rock/spr_rock.yy",},
+    {"name":"spr_stripes","order":7,"path":"sprites/spr_stripes/spr_stripes.yy",},
+    {"name":"tsp_grass","order":4,"path":"sprites/tsp_grass/tsp_grass.yy",},
+    {"name":"ts_grass","order":3,"path":"tilesets/ts_grass/ts_grass.yy",},
+  ],
+}
