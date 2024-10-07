@@ -30,9 +30,9 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2022.0.2.51",
+    "IDEVersion":"2024.8.1.171",
   },
-  "name":"room-shift-test",
+  "name":"room-shift-test-2024",
   "resources":[
     {"id":{"name":"obj_cow","path":"objects/obj_cow/obj_cow.yy",},},
     {"id":{"name":"pt_test","path":"paths/pt_test/pt_test.yy",},},
