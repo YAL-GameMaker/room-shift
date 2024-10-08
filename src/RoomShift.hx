@@ -4,11 +4,38 @@ import yy.GMRoom;
 import yy.GMPath;
 import yy.layers.*;
 import yy.GMTileArray;
+#if js
+import js.Browser.*;
+import js.lib.Promise;
+#end
 
 class RoomShift {
+	#if js
+	public static var logElement = document.querySelector("#log");
+	#end
 	public static inline function log(msg:String) {
 		#if sys
 		Sys.println(msg);
+		#elseif js
+		var e = document.createDivElement();
+		e.appendChild(document.createTextNode(msg));
+		logElement.appendChild(e);
+		e.scrollIntoView();
+		console.log(msg);
+		#else
+		trace(msg);
+		#end
+	}
+	public static inline function warn(msg:String) {
+		#if sys
+		Sys.println(msg);
+		#elseif js
+		var e = document.createDivElement();
+		e.appendChild(document.createTextNode(msg));
+		e.classList.add("warn");
+		logElement.appendChild(e);
+		e.scrollIntoView();
+		console.warn(msg);
 		#else
 		trace(msg);
 		#end
@@ -30,17 +57,57 @@ class RoomShift {
 		#if sys
 		Sys.println(" " + timeDiffToString(Sys.time() - ctx.time));
 		#else
-		trace(ctx.name + ": " + timeDiffToString(haxe.Timer.stamp() - ctx.time));
+		log(ctx.name + ": " + timeDiffToString(haxe.Timer.stamp() - ctx.time));
 		#end
 	}
-	public static function apply(roomName:String, config:RoomShiftConfig) {
+	#if js
+	public static function applyAsync(roomName:String, config:RoomShiftConfig) {
+		var project:ProjectWeb = cast Project.current;
+		var roomPath = 'rooms/$roomName/$roomName.yy';
+		return project.readYyFileAsync(roomPath).then(room -> {
+			var paths = [];
+			function proc(layer:GMRLayer) switch (layer.resourceType) {
+				case "GMRLayer": {
+					for (sublayer in layer.layers) proc(sublayer);
+				};
+				case "GMRTileLayer": {
+					var tileLayer:GMRTileLayer = cast layer;
+					if (tileLayer.tilesetId == null) return;
+					//
+					var relPath = tileLayer.tilesetId.path;
+					if (!paths.contains(relPath)) paths.push(relPath);
+				};
+				case "GMRPathLayer": {
+					var pathLayer:GMRPathLayer = cast layer;
+					if (pathLayer.pathId == null) return;
+					//
+					var relPath = pathLayer.pathId.path;
+					if (!paths.contains(relPath)) paths.push(relPath);
+				};
+			}
+			var room:GMRoom = project.readYyFile(roomPath);
+			for (layer in room.layers) proc(layer);
+			var promises = paths.map(path -> project.readTextFileAsync(path));
+			return js.lib.Promise.all(promises).then(function(_) {
+				apply(roomName, config, room);
+				return new Promise((resolve, reject) -> {
+					window.setTimeout(function() resolve(true));
+				});
+			});
+		});
+	}
+	#end
+	public static function apply(roomName:String, config:RoomShiftConfig, ?room:GMRoom) {
 		var project = Project.current;
 		var roomPath = 'rooms/$roomName/$roomName.yy';
 		log('Applying to "$roomName"...');
 		//
-		var tc = logStart("Loading YY");
-		var room:GMRoom = project.readYyFile(roomPath);
-		logEnd(tc);
+		var tc;
+		if (room == null) {
+			tc = logStart("Loading YY");
+			room = project.readYyFile(roomPath);
+			logEnd(tc);
+		}
 		tc = logStart("Applying");
 		var roomSettings = room.roomSettings;
 		//

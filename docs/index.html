@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>YAL's room-shifter</title>
+	<link rel='stylesheet' href="style.css" />
+</head><body>
+	<main>
+		<h1>YellowAfterlife's room-shifter</h1>
+		<p>
+			
+		</p>
+		<table id="config"><tr>
+			<td colspan="4">Extend</td>
+		</tr><tr>
+			<td><label for="opt-left">Left</label></td>
+			<td><input id="opt-left"></td>
+			<td><label for="opt-right">Right</label></td>
+			<td><input id="opt-right"></td>
+		</tr><tr>
+			<td><label for="opt-top">Top</label></td>
+			<td><input id="opt-top"></td>
+			<td><label for="opt-bottom">Bottom</label></td>
+			<td><input id="opt-bottom"></td>
+		</tr><tr>
+			<td colspan="4">Or resize</td>
+		</tr><tr>
+			<td><label for="opt-width">Width</label></td>
+			<td><input  id="opt-width"></td>
+			<td><label for="opt-height">Height</label></td>
+			<td><input  id="opt-height"></td>
+		</tr><tr>
+			<td><label for="opt-halign">hAlign</label></td>
+			<td><input  id="opt-halign"></td>
+			<td colspan="2">
+				<input type="button" class="set-input" data-target="#opt-halign" data-value="0" value="Left">
+				<input type="button" class="set-input" data-target="#opt-halign" data-value="1" value="Center">
+				<input type="button" class="set-input" data-target="#opt-halign" data-value="2" value="Right">
+			</td>
+		</tr><tr>
+			<td><label for="opt-valign">vAlign</label></td>
+			<td><input  id="opt-valign"></td>
+			<td colspan="2">
+				<input type="button" class="set-input" data-target="#opt-valign" data-value="0" value="Top">
+				<input type="button" class="set-input" data-target="#opt-valign" data-value="1" value="Middle">
+				<input type="button" class="set-input" data-target="#opt-valign" data-value="2" value="Bottom">
+			</td>
+		</tr><tr>
+			<td colspan="4">
+				Rooms to apply to:<br>
+				<textarea id="opt-rooms" rows="7" placeholder="rm_stage_1
+rm_stage_2
+rm_stage_* ➜ wildcard for suffix
+rm_stage_# ➜ wildcard for numbers only
+-rm_stage_debug ➜ to exclude room(s)"></textarea>
+			</td>
+		</tr><tr>
+			<td><label for="opt-project">Project</label></td>
+			<td colspan="3">
+				<form id="form-project">
+					<input type="file" id="opt-project" webkitdirectory multiple />
+				</form>
+			</td>
+		</tr><tr>
+			<td colspan="4">
+				Ready? <input type="button" id="opt-run" value="Modify rooms" disabled>
+			</td>
+		</tr><tr>
+			<td colspan="4">
+				<div id="log">
+					<div>Load a project first!</div>
+				</div>
+			</td>
+		</tr><tr>
+			<td colspan="4">
+				<input type="button" id="opt-download" value="Download changed files" disabled>
+			</td>
+		</tr></table>
+	</main>
+	<script src="script.js"></script>
+	<script src="FileSaver.min.js" async></script>
+</body>
+</html>

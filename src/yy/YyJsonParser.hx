@@ -68,7 +68,7 @@ class YyJsonParser {
 						hxOrder.push(field);
 						var val = parseRec();
 						if (Reflect.hasField(obj, field)) {
-							#if js
+							#if (js && !not_gmedit)
 							Main.console.log('Duplicate field definition: $field', val);
 							#else
 							trace('Duplicate field definition: $field', val);

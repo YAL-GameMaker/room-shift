@@ -71,6 +71,7 @@ class MainSys {
 			Sys.exit(1);
 		}
 		var project = new ProjectSys(projectPath);
+		project.ready();
 		Project.current = project;
 		//
 		var rooms = [];

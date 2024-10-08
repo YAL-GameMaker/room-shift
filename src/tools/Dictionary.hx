@@ -77,7 +77,11 @@ abstract Dictionary<T>(DictionaryImpl<T>) from DictionaryImpl<T> {
 		return untyped this[key];
 	}
 	public inline function nc(key:String):T {
+		#if (not_gmedit)
+		return this != null ? untyped this[key] : null;
+		#else
 		return JsTools.nca(this, untyped this[key]);
+		#end
 	}
 	public inline function set(k:String, v:T):Void {
 		untyped this[k] = v;

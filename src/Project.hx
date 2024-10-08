@@ -14,6 +14,9 @@ class Project {
 	public var roomList:Array<String> = [];
 	//
 	public function new() {
+		
+	}
+	public function ready() {
 		var root:GMProject = readYyFile(filename);
 		//
 		var yyResourceVersion = try {
@@ -58,5 +61,34 @@ class Project {
 	}
 	public function writeYyFile(relPath:String, obj:Any) {
 		writeTextFile(relPath, YyJsonPrinter.stringify(obj, true));
+	}
+	public function procRoomArg(rooms:Array<String>, arg:String) {
+		function roomProc(room:String, remove:Bool) {
+			if (remove) {
+				rooms.remove(room);
+			} else {
+				if (!rooms.contains(room)) {
+					rooms.push(room);
+				}
+			}
+		}
+		var remove = false;
+		if (arg.startsWith("-")) {
+			remove = true;
+			arg = arg.substring(1);
+		}
+		if (arg.contains("*") || arg.contains("#")) {
+			var rs = "^" + arg.replace("*", ".+?").replace("#", "\\d+?") + "$";
+			var rx = new EReg(rs, "");
+			for (room in roomList) {
+				if (rx.match(room)) roomProc(room, remove);
+			}
+		} else {
+			if (roomList.contains(arg)) {
+				roomProc(arg, remove);
+			} else {
+				RoomShift.warn('Room "$arg" does not exist.');
+			}
+		}
 	}
 }

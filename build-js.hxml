@@ -1,0 +1,5 @@
+shared.hxml
+--js docs/script.js
+-dce full
+--class-path src
+--main MainWeb

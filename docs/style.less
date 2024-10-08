@@ -1,0 +1,59 @@
+body {
+	background: #889EC5;
+	font: 16px sans-serif;
+}
+main {
+	background: white;
+	color: black;
+	max-width: 640px;
+	margin: 0 auto;
+	padding: 10px;
+	h1 {
+		margin: 0.1em 0;
+		transform: skewX(-5deg);
+	}
+}
+@media (prefers-color-scheme: dark) {
+	body {
+		background: #405070;
+	}
+	main {
+		background: #1A202D;
+		color: white;
+	}
+}
+table#config {
+	width: 100%;
+	td:first-child:last-child {
+		text-align: center;
+	}
+	td > label:last-child {
+		display: block;
+		text-align: right;
+	}
+	td:not([colspan]) {
+		form, input:first-child:last-child {
+			width: 100%;
+			box-sizing: border-box;
+		}
+	}
+	textarea {
+		width: 100%;
+		box-sizing: border-box;
+		resize: vertical;
+	}
+}
+#log {
+	overflow-x: auto;
+	overflow-y: visible;
+	height: 6em;
+	resize: vertical;
+	border: 1px solid currentColor;
+	padding: 0.3em;
+}
+#log > div {
+	text-align: left;
+}
+#log .warn {
+	color: red;
+}

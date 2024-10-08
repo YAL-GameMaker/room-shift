@@ -1,0 +1,6 @@
+shared.hxml
+--neko room-shift.n
+-dce full
+--class-path src
+--main MainSys
+#--cmd neko room-shift.n --project room-shift-test-2024/room-shift-test-2024.yyp --left 16 --top 32 --right 64 --bottom 48 Room1

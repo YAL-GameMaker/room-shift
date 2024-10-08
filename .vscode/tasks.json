@@ -2,10 +2,17 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Build",
+			"label": "Build for Neko",
 			"group": { "kind": "build", "isDefault": true },
 			"command": "haxe",
-			"args": ["build.hxml"],
+			"args": ["build-neko.hxml"],
+			"problemMatcher": ["$haxe"]
+		},
+		{
+			"label": "Build for web",
+			"group": { "kind": "build" },
+			"command": "haxe",
+			"args": ["build-js.hxml"],
 			"problemMatcher": ["$haxe"]
 		},
 	]

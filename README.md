@@ -60,7 +60,7 @@ This would resize Room1 and Room2 to 2048x2048, placing the original contents in
 1. Install [Haxe](https://haxe.org)
 2. Download and unzip or check out the repository
 3. Open command prompt/terminal in the source directory
-4. `haxe build.hxml`
+4. `haxe build-neko.hxml`
 
 If all is well, `room-shift.n` should appear in the directory.
 

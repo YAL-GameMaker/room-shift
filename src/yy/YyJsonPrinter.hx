@@ -211,7 +211,7 @@ class YyJsonPrinter {
 				}
 			} else if (nt != null) {
 				meta = isExt ? (_2023 ? metaByResourceType2023[nt] : metaByResourceType[nt]) : metaByModelName[nt];
-				#if js
+				#if (js && !not_gmedit)
 				if (meta == null) Main.console.warn('Unknown type $nt');
 				#end
 			} else if (isExt) {
@@ -332,7 +332,7 @@ class YyJsonPrinter {
 		wantCompact = extJson;
 		trailingCommas = extJson;
 		isExt = extJson;
-		#if js
+		#if (js && !not_gmedit)
 		var project = gml.Project.current;
 		if (project != null) {
 			isGM2023 = project.isGM2023;
@@ -349,7 +349,7 @@ class YyJsonPrinter {
 	}
 	
 	public static function init() {
-		#if js
+		#if (js && !not_gmedit)
 		_Int64 = Type.resolveClass("haxe._Int64.___Int64");
 		if (_Int64 == null) Console.error("Couldn't find Int64 implementation!");
 		#end
