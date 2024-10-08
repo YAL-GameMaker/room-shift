@@ -26,8 +26,33 @@ abstract GMTileRLE(Array<Float>) {
 		return out;
 	}
 	public static inline function fromArray(arr:GMTileArray):GMTileRLE {
-		// I'll do it later
-		return cast [(arr.length:Float)].concat(arr);
+		var i = 0;
+		var n = arr.length;
+		var out:Array<Float> = [];
+		var numAt = -1;
+		while (i < n) {
+			var v = arr[i++];
+			if (i + 1 < n && arr[i] == v && arr[i + 1] == v) {
+				// sequence
+				var start = i - 1;
+				while (i < n) {
+					if (arr[i] == v) {
+						i += 1;
+					} else break;
+				}
+				out.push(-(i - start));
+				out.push(v);
+				numAt = -1;
+				continue;
+			}
+			if (numAt < 0) {
+				numAt = out.length;
+				out.push(0);
+			}
+			out[numAt] += 1;
+			out.push(v);
+		}
+		return cast out;
 	}
 }
 
@@ -43,11 +68,11 @@ to Vector<GMTileGridRow> {
 	public function new(cols:Int, rows:Int) {
 		this = new Vector(rows, null);
 		for (y in 0 ... rows) {
-			this[y] = new Vector(cols, 0.0);
+			this[y] = new Vector(cols, -2147483648.0);
 		}
 	}
 	//
-	public static function fromArray(arr:GMTileArray, cols:Int) {
+	public static function fromArray(arr:GMTileArray, cols:Int):GMTileGrid {
 		var rows = Std.int(arr.length / cols);
 		var out = new Vector<GMTileGridRow>(rows, null);
 		var pos = 0;
@@ -60,6 +85,24 @@ to Vector<GMTileGridRow> {
 		}
 		return out;
 	}
+	public function toArray():GMTileArray {
+		var arr = [];
+		for (y in 0 ... height) {
+			var row = this[y];
+			for (x in 0 ... width) {
+				arr.push(row[x]);
+			}
+		}
+		return arr;
+	}
+	//
+	public static function fromRLE(rle:GMTileRLE, cols:Int) {
+		return fromArray(rle.toArray(), cols);
+	}
+	public function toRLE():GMTileRLE {
+		return GMTileRLE.fromArray(toArray());
+	}
+	//
 	public inline function asVector():Vector<GMTileGridRow> return this;
 	//
 	public inline function get(x:Int, y:Int):GMTileItem {
@@ -75,8 +118,8 @@ to Vector<GMTileGridRow> {
 		inline function imax(a, b) {
 			return a > b ? a : b;
 		}
-		var rows = this.length;
-		var cols = this[0].length;
+		var rows = height;
+		var cols = width;
 		//
 		var newCols = cols + dl + dr;
 		var newRows = rows + dt + db;
@@ -86,7 +129,7 @@ to Vector<GMTileGridRow> {
 		var x1 = cols - imax(0, -dr);
 		//var ox = imax(0, dl);
 		var y0 = imax(0, -dt);
-		var y1 = cols - imax(0, -db);
+		var y1 = rows - imax(0, -db);
 		//var oy = imax(0, dt);
 		//
 		for (y in y0 ... y1) {

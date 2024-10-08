@@ -1,4 +1,5 @@
 package yy;
+import haxe.iterators.RestIterator;
 #if js
 import js.lib.RegExp;
 #end
@@ -150,18 +151,38 @@ class YyJsonPrinter {
 			var len = arr.length;
 			var wantedCompact = YyJsonPrinter.wantCompact;
 			if (len == 0 && wantedCompact) return "[]";
-			var r = "[\r\n" + indentString.repeat(++indent);
+			#if !js
+			var breakEach = 0;
+			if (arr[0] is Float) {
+				wantedCompact = true;
+				breakEach = 32;
+			}
+			#end
+			//
+			indent += 1;
+			var rb = new YyJsonPrinterBuf();
+			rb.addPreRepeat("[\r\n", indentString, indent);
+			//
 			for (i in 0 ... arr.length) {
 				nextType = nt;
+				#if !js
+				if (breakEach > 0) {
+					if (i > 0 && i % breakEach == 0) rb.addPreRepeat("\r\n", indentString, indent);
+					rb.addPair(stringify_rec(arr[i], indent, true), ",");
+				} else // ->
+				#end
 				if (wantedCompact) {
-					if (i > 0) r += "\r\n" + indentString.repeat(indent);
-					r += stringify_rec(arr[i], indent, true) + ",";
+					if (i > 0) rb.addPreRepeat("\r\n", indentString, indent);
+					rb.addPair(stringify_rec(arr[i], indent, true), ",");
 				} else {
-					if (i > 0) r += ",\r\n" + indentString.repeat(indent);
-					r += stringify_rec(arr[i], indent, compact);
+					if (i > 0) rb.addPreRepeat(",\r\n", indentString, indent);
+					rb.add(stringify_rec(arr[i], indent, compact));
 				}
 			}
-			return r + "\r\n" + indentString.repeat(--indent) + "]";
+			//
+			indent -= 1;
+			rb.addWrapRepeat("\r\n", indentString, indent, "]");
+			return rb.toString();
 		}
 		else if (Reflect.isObject(obj)) {
 			if (obj.__int64) return "" + (obj:Int64);
@@ -170,7 +191,10 @@ class YyJsonPrinter {
 			#end
 			var indentString = YyJsonPrinter.indentString;
 			indent += 1;
-			var r = (compact ? "{" : "{\r\n" + indentString.repeat(indent));
+			var rb = new YyJsonPrinterBuf();
+			if (!compact) {
+				rb.addPreRepeat("{\r\n", indentString, indent);
+			} else rb.add("{");
 			var orderedFields = (obj:YyBase).hxOrder;
 			var fieldDigits = (obj:YyBase).hxDigits;
 			var fieldTypes:Dictionary<String> = null;
@@ -230,23 +254,23 @@ class YyJsonPrinter {
 			var orderedFieldsAfter = isExt && !_2023;
 			inline function addSep():Void {
 				if (!tcs) {
-					if (sep) r += ",\r\n" + indentString.repeat(indent); else sep = true;
+					if (sep) rb.addPreRepeat(",\r\n", indentString, indent); else sep = true;
 				} else if (!compact) {
-					if (sep) r += "\r\n" + indentString.repeat(indent); else sep = true;
+					if (sep) rb.addPreRepeat("\r\n", indentString, indent); else sep = true;
 				}
 			}
 			function addField(field:String):Void {
 				addSep();
 				if (field == null) field = "null?!";
 				found++;
-				r += stringify_string(field) + (compact || isGM2024 ? ":" : ": ");
+				rb.addPair(stringify_string(field), compact || isGM2024 ? ":" : ": ");
 				if (fieldTypes != null) {
 					nextType = fieldTypes.get(field);
 				} else nextType = null;
-				r += stringify_rec(Reflect.field(obj, field), indent, compact,
+				rb.add(stringify_rec(Reflect.field(obj, field), indent, compact,
 					fieldDigits != null ? fieldDigits[field] : null
-				);
-				if (tcs) r += ",";
+				));
+				if (tcs) rb.add(",");
 			}
 			
 			// with 2022.8/YYP resourceVersion>=1.6, key fields (type, name, version)
@@ -258,9 +282,9 @@ class YyJsonPrinter {
 			
 			// if ordered fields should go after the regular ones,
 			// we'll swap result-string 
-			var rOrig:String, rAfter:String;
+			var rOrig:YyJsonPrinterBuf, rAfter:YyJsonPrinterBuf;
 			if (orderedFieldsAfter) {
-				rOrig = r; r = "";
+				rOrig = rb; rb = new YyJsonPrinterBuf();
 			} else rOrig = null;
 			
 			//
@@ -271,8 +295,8 @@ class YyJsonPrinter {
 			}
 			//
 			if (orderedFieldsAfter) {
-				rAfter = r;
-				r = rOrig;
+				rAfter = rb;
+				rb = rOrig;
 			} else rAfter = null;
 			//
 			var allFields = Reflect.fields(obj);
@@ -283,16 +307,19 @@ class YyJsonPrinter {
 					if (isOrdered.exists(field)) continue;
 					addField(field);
 				}
-				if (orderedFieldsAfter && rAfter != "") {
+				if (orderedFieldsAfter && rAfter.length > 0) {
 					addSep();
-					r += rAfter;
+					rb.add(rAfter.toString());
 				}
 			} else {
-				if (orderedFieldsAfter) r += rAfter;
+				if (orderedFieldsAfter) rb.add(rAfter.toString());
 			}
 			//
 			indent -= 1;
-			return r + (compact ? "}" : "\r\n" + indentString.repeat(indent) + "}");
+			if (!compact) {
+				rb.addWrapRepeat("\r\n", indentString, indent, "}");
+			} else rb.add("}");
+			return rb.toString();
 		}
 		else {
 			if (digits != null && (obj is Int)) {
@@ -325,6 +352,33 @@ class YyJsonPrinter {
 		#if js
 		_Int64 = Type.resolveClass("haxe._Int64.___Int64");
 		if (_Int64 == null) Console.error("Couldn't find Int64 implementation!");
+		#end
+	}
+}
+class YyJsonPrinterBuf extends StringBuf {
+	public inline function addPair(a:String, b:String) {
+		#if js
+		add(a + b);
+		#else
+		add(a);
+		add(b);
+		#end
+	}
+	public inline function addPreRepeat(lb:String, indentString:String, indent:Int) {
+		#if js
+		add(lb + indentString.repeat(indent));
+		#else
+		add(lb);
+		for (_ in 0 ... indent) add(indentString);
+		#end
+	}
+	public inline function addWrapRepeat(lb:String, indentString:String, indent:Int, post:String) {
+		#if js
+		add(lb + indentString.repeat(indent) + post);
+		#else
+		add(lb);
+		for (_ in 0 ... indent) add(indentString);
+		add(post);
 		#end
 	}
 }

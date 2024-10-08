@@ -1,6 +1,7 @@
 import yy.GMProject;
 import yy.YyJsonPrinter;
 import yy.YyJsonParser;
+using StringTools;
 
 class Project {
 	/**
@@ -10,6 +11,8 @@ class Project {
 	public static var current:Project;
 	//
 	public var filename:String;
+	public var roomList:Array<String> = [];
+	//
 	public function new() {
 		var root:GMProject = readYyFile(filename);
 		//
@@ -30,6 +33,12 @@ class Project {
 				YyJsonPrinter.isGM2024 = year >= 2024;
 				YyJsonPrinter.wantPrefixFields = year < 2023 && yyResourceVersion >= 1.6;
 			}
+		}
+		//
+		for (res in root.resources) {
+			var rel = res.id.path;
+			if (!rel.startsWith("rooms/")) continue;
+			roomList.push(res.id.name);
 		}
 	}
 	//
