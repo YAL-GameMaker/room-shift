@@ -157,5 +157,6 @@ class MainWeb {
 			console.log(files);
 		}
 		//
+		RoomShift.log("Ready! Compiled at " + tools.BuildDate.asString());
 	}
 }

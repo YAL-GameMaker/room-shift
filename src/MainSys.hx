@@ -111,7 +111,6 @@ class MainSys {
 		}
 		Sys.println("Configuration: " + opt);
 		Sys.println("Rooms: " + rooms.join(", "));
-		return;
 		for (room in rooms) {
 			RoomShift.apply(room, opt);
 		}

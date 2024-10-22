@@ -172,14 +172,16 @@ class RoomShift {
 					addTop = Math.ceil(oy / tileHeight);
 					addY = oy - addTop * tileHeight;
 				}
+				var addRight = Math.ceil(sx / tileWidth);
+				var addBottom = Math.ceil(sy / tileHeight);
 				//
 				var tiles = tileLayer.tiles;
 				var grid = GMTileGrid.fromRLE(tiles.TileCompressedData, tiles.SerialiseWidth);
-				if (addLeft != 0 || addTop != 0) {
-					grid = grid.expand(addLeft, addTop, 0, 0);
+				if (addLeft != 0 || addTop != 0 || addRight != 0 || addBottom != 0) {
+					grid = grid.expand(addLeft, addTop, addRight, addBottom);
 					tiles.TileCompressedData = grid.toRLE();
-					tiles.SerialiseWidth += addLeft;
-					tiles.SerialiseHeight += addTop;
+					tiles.SerialiseWidth = grid.width;
+					tiles.SerialiseHeight = grid.height;
 				}
 				//
 				tileLayer.x += addX;
