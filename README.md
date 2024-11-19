@@ -1,13 +1,29 @@
-# room-shift
+# YellowAfterlife's room-shifter
 Resizes and/or moves the contents of GameMaker (LTS / GM2022+) rooms.
 
 Mostly exists to help with the specific problem of "I want to resize my room towards top/left without moving my layers by hand". If you know, you know.
 
-## Installation
+Don't forget to backup your project before using the tool!
+
+## Use ([web version](https://yal.cc/tools/gm/room-shifter/))
+You specify how you want your rooms to be resized,
+specify _which_ rooms you want resized,
+choose your project directory,
+press the "Modify rooms" button,
+and get a set of changed files in a ZIP!
+
+You can then close your project in GM,
+extract these in the project directory (overwriting as necessary),
+and open it again.
+
+The tool works client-side so you can save the page for offline use.
+
+## Setup (CLI)
+CLI version is for people that might need to do this often (?).
 1. Install [Neko VM](https://nekovm.org/download/)
 2. Place `room-shift.n` somewhere (if you downloaded a standalone Neko VM ZIP, you can put it in Neko directory)
 
-## Use
+## Use (CLI)
 Open command prompt/terminal in the directory with Neko and/or `room-shift.n` and do:
 ```
 neko room-shift.n --project path/to/project.yyp <...options> <...rooms>
@@ -57,13 +73,18 @@ This would resize Room1 and Room2 to 2048x2048, placing the original contents in
 
 ## Building
 
-1. Install [Haxe](https://haxe.org)
-2. Download and unzip or check out the repository
-3. Open command prompt/terminal in the source directory
+1. Install [Haxe](https://haxe.org)  
+   v4.3.6 was used as of writing.
+2. Download and unzip or "clone" (using git) the repository
+3. Open command prompt/terminal in the directory (where this `README` is)
 4. `haxe build-neko.hxml`
 
 If all is well, `room-shift.n` should appear in the directory.
 
 ## Known issues
 
-- Not actively tested with making rooms _smaller_.
+1. Not actively tested with making rooms _smaller_.
+1. Resizing a room multiple times might leave redundant tile columns/rows  
+   (which GameMaker will usually clean up on load)
+1. GameMaker will usually re-format the room's .yy file when you open it.  
+   This is to be expected - it's hard to perfectly match the format.
