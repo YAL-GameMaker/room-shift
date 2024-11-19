@@ -93,8 +93,8 @@ class MainWeb {
 			opt.offsetX = opt.sizeDX;
 			opt.sizeDY = int(opt_top);
 			opt.offsetY = opt.sizeDY;
-			opt.offsetX += int(opt_right);
-			opt.offsetY += int(opt_bottom);
+			opt.sizeDX += int(opt_right);
+			opt.sizeDY += int(opt_bottom);
 			opt.width = int(opt_width);
 			opt.height = int(opt_height);
 			opt.halign = flt(opt_halign);

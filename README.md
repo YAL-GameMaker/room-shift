@@ -3,6 +3,9 @@ Resizes and/or moves the contents of GameMaker (LTS / GM2022+) rooms.
 
 Mostly exists to help with the specific problem of "I want to resize my room towards top/left without moving my layers by hand". If you know, you know.
 
+| [![](media/before.png)](media/before.png) | [![](media/after.png)](media/after.png) |
+| - | - |
+
 Don't forget to backup your project before using the tool!
 
 ## Use ([web version](https://yal.cc/tools/gm/room-shifter/))
