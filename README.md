@@ -81,6 +81,8 @@ This would resize Room1 and Room2 to 2048x2048, placing the original contents in
 
 If all is well, `room-shift.n` should appear in the directory.
 
+If you made changes, you can re-compile the JS file for the web version using `haxe build.js.hxml`
+
 ## Known issues
 
 1. Not actively tested with making rooms _smaller_.
