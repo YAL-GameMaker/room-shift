@@ -8,6 +8,8 @@ Mostly exists to help with the specific problem of "I want to resize my room tow
 
 Don't forget to backup your project before using the tool!
 
+Also see: [Suggestion on GameMaker bug tracker](https://github.com/YoYoGames/GameMaker-Bugs/issues/3225)
+
 ## Use ([web version](https://yal.cc/tools/gm/room-shifter/))
 You specify how you want your rooms to be resized,
 specify _which_ rooms you want resized,
