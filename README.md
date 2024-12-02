@@ -95,3 +95,9 @@ If you made changes, you can re-compile the JS file for the web version using `h
    (which GameMaker will usually clean up on load)
 1. GameMaker will usually re-format the room's .yy file when you open it.  
    This is to be expected - it's hard to perfectly match the format.
+
+## Credits
+
+- A tool by YellowAfterlife!
+- Written in Haxe!
+- Originally commissioned by Broxcorp Ltd., released with permission
